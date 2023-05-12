@@ -154,6 +154,23 @@ def buy_tickets(purchase_records, seating_matrix):
             print("\nSorry, your selection is not available.")
             return
     
+    # Create list of seat numbers purchased
+    seats_purchased = list()
+    for i in range(0, number_seats):
+        purchased_row = str(start_row)
+        purchased_column = start_column + i
+        column_letter = numbers_to_letters[str(purchased_column)]
+        
+        if len(purchased_row) == 1:
+            purchased_row = '0' + purchased_row
+        
+        seat_number = purchased_row + column_letter
+        seats_purchased.append(seat_number)
+
+
+    # Call function to record transaction
+    record_transaction(purchase_records, number_seats, seats_purchased, start_row, start_column)
+    
     for i in range(0, number_seats):
 
         # Reserve user's selected seats
@@ -263,6 +280,54 @@ def covid_spacing(seating_matrix, number_seats, start_row, start_column):
 
     return
 
+# Records purchase transaction details: name, email, etc.
+def record_transaction(purchase_records, number_seats, seats_purchased, start_row, start_column):
+    name = input("\nPlease enter your name: ")
+    email = input("\nPlease enter your email: ")
+    tickets = number_seats
+    mask_cost = 5 * number_seats
+
+    if start_row < 5:
+        seat_type = "Front"
+        ticket_cost = 80 * tickets
+    
+    elif start_row < 11:
+        seat_type = "Middle"
+        ticket_cost = 50 * tickets
+    
+    else:
+        seat_type = "Back"
+        ticket_cost = 25 * tickets
+
+    sub_total = ticket_cost + mask_cost
+    tax = round(sub_total * 0.0725, 2)
+    total = sub_total + tax
+
+    purchase_records[name] = [email, tickets, seat_type, seats_purchased, ticket_cost, mask_cost, sub_total, tax, total]
+
+    print_receipt(purchase_records, name)
+    return
+
+# Prints out user's receipt for transaction
+def print_receipt(purchase_records, name):
+    receipt_header = "\n\n" + "="*77 + "\n\tRECEIPT\n" + "="*77 + "\n"
+    print(receipt_header)
+    print("-" * 77)
+    print("Name\t\t: ", name)
+    print("Email\t\t: ", purchase_records[name][0])
+    print("No. of Tickets\t: ", purchase_records[name][1])
+    print("Seat Type\t: ", purchase_records[name][2])
+    print("Seat No.\t: ", purchase_records[name][3])
+    print("Ticket Cost\t: ", purchase_records[name][4])
+    print("Mask Fee\t: ", purchase_records[name][5])
+    print("Sub-total\t: ", purchase_records[name][6])
+    print("Tax\t\t: ", purchase_records[name][7])
+    print("Name\t\t: ", name)
+    print("Total\t\t: ", purchase_records[name][8])
+    print("Name\t\t: ", name)
+    
+
+# Saves seating chart and purchase history to JSON files
 def quit_program(seating_matrix, purchase_records):
     with open("seating.json", "w") as outfile1:
         json.dump(seating_matrix, outfile1)
