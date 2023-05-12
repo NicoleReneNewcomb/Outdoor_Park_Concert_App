@@ -81,6 +81,20 @@ def create_column_header(columns):
     column_header = letter_line + "\n" + separator_line
     return column_header
 
+# Opens JSON file or creates dictionary to track purchases
+def load_purchases():
+
+    #Opens JSON purchase file, if exists
+    try:
+        open_purchase_file = open(os.path.join(os.path.dirname(__file__), "purchases.json"))
+        purchase_records = json.load(open_purchase_file) 
+    except IOError:
+        print("Error: Sorry, file can't be opened " + open_purchase_file)
+        purchase_records = dict()          
+        raise IOError
+    finally:
+        return purchase_records
+
 # Menu function to display menu and accept user input
 def menu_selections(user_selection, purchase_records, seating_matrix, rows, columns):
     
@@ -147,6 +161,11 @@ def buy_tickets(purchase_records, seating_matrix):
     # Slice user entry to separate row from column and convert
     start_row = int(starting_seat[0:2]) - 1
     start_column = letters_to_numbers[str(starting_seat[2:3])]
+
+    # Check if seats in range
+    if start_column + number_seats - 1 > 25:
+        print("\nSorry, your seats are out of the available range.")
+        return
 
     # Check if seats available
     for i in range(0, number_seats):
@@ -323,7 +342,7 @@ def print_receipt(purchase_records, name):
     print("Sub-total\t:  $" + str(round(purchase_records[name][6], 2)) + ".00")
     print("Tax\t\t:   ${:.2f}".format(round(purchase_records[name][7], 2)))
     print("-" * 77)
-    print("Total\t\t:  $" + str(round(purchase_records[name][8], 2)))
+    print("Total\t\t:  ${:.2f}".format(round(purchase_records[name][8], 2)))
     print("-" * 77)
     
 
@@ -343,7 +362,7 @@ user_selection = '__'
 rows = 20
 columns = 26
 seating_matrix = create_seating(rows, columns)
-purchase_records = dict()
+purchase_records = load_purchases()
 
 # Call function to display menu and accept user input
 menu_selections(user_selection, purchase_records, seating_matrix, rows, columns)
