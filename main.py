@@ -80,6 +80,15 @@ def create_column_header(columns):
     column_header = letter_line + "\n" + separator_line
     return column_header
 
+def menu_options(user_selection, rows, columns):
+    if user_selection is 'v':
+        print_seating(seating_matrix, rows, columns)
+    elif user_selection is "b":
+        buy_ticket()
+    elif user_selection is "d":
+        display_all_purchases()
+    elif user_selection is "s":
+        search_for_purchase()
 
 
 def quit_program(seating_matrix, purchase_records):
@@ -96,6 +105,6 @@ purchase_records = dict()
 while user_selection != 'q':
     print_menu()
     user_selection = input("Please enter your selection: ")
-print("UGHHHHH")
-print_seating(seating_matrix, rows, columns)
+    menu_options(user_selection, rows, columns)
+
 quit_program(seating_matrix, purchase_records)
