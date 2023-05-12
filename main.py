@@ -9,7 +9,7 @@ import json
         and ticket sales with receipts for users.
 """
 
-# Opens JSON or creates matrix (2D array) to represent seating chart
+# Opens JSON file or creates matrix (2D array) as seating chart
 def create_seating(rows, columns):
         
     #Opens JSON seating file, if exists
@@ -34,9 +34,17 @@ def print_seating_chart(matrix, rows, columns):
     print(seating_header)
     print(column_header)
     for row in range(rows):
-        print("%02d" % (row), end="\t")
+
+        # Since 0 is an uncommon row number, I added 1 to each row #
+        print("%02d" % (row + 1), end="\t")
         [print(seating_matrix[row][column], end = " ") for column in range(columns)]
-        print()
+        if row < 5:
+            print("\tFront\t $80")
+        elif row < 11:
+            print("\tMiddle\t $50")
+        else:
+            print("\tBack\t $25")
+    print()
 
 # Creates seating header to be displayed
 def create_seating_header():
