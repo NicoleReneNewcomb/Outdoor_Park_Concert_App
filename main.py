@@ -26,6 +26,21 @@ def create_seating(rows, columns):
     finally:
         return seating_matrix
 
+# Prints the app menu for user selections
+def print_menu():
+    menu_header = create_menu_header()
+    print(menu_header)
+    print("\t[b] Buy")
+    print("\t[v] View Seating")
+    print("\t[s] Search for Customer Purchase Receipt by Name")
+    print("\t[d] Display All Purchases and Total Sales Amount")
+    print("\t[q] quit")
+    print("\n")
+
+def create_menu_header():
+    menu_header = "\n\n" + "="*77 + "\n\tOutdoor Park Concert App\n" + "="*77 + "\n"
+    return menu_header
+
 # Prints out entire seating chart with headers
 def print_seating(matrix, rows, columns):
 
@@ -45,15 +60,6 @@ def print_seating(matrix, rows, columns):
         else:
             print("\tBack\t $25")
     print()
-
-# Prints the app menu for user selections
-def print_menu():
-    menu_header = create_menu_header()
-    print(menu_header)
-
-def create_menu_header():
-    menu_header = "\n\n" + "="*77 + "\n\tOutdoor Park Concert App\n" + "="*77 + "\n"
-    return menu_header
 
 # Creates seating header to be displayed
 def create_seating_header():
