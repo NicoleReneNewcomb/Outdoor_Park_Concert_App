@@ -61,11 +61,11 @@ def create_column_header(columns):
 
 
 def quit_program(seating_matrix):
-    return 0
+    with open("seating.json", "w") as outfile:
+        json.dump(seating_matrix, outfile)
 
 rows = 20
 columns = 26
 seating_matrix = create_seating(rows, columns)
-
-
-print_seating_chart(seating_matrix)
+print_seating_chart(seating_matrix, rows, columns)
+quit_program(seating_matrix)
