@@ -157,9 +157,9 @@ def buy_tickets(purchase_records, seating_matrix):
     # Create list of seat numbers purchased
     seats_purchased = list()
     for i in range(0, number_seats):
-        purchased_row = str(start_row)
+        purchased_row = str(start_row + 1)
         purchased_column = start_column + i
-        column_letter = numbers_to_letters[str(purchased_column)]
+        column_letter = numbers_to_letters[str(purchased_column)].upper()
         
         if len(purchased_row) == 1:
             purchased_row = '0' + purchased_row
@@ -318,13 +318,13 @@ def print_receipt(purchase_records, name):
     print("No. of Tickets\t: ", purchase_records[name][1])
     print("Seat Type\t: ", purchase_records[name][2])
     print("Seat No.\t: ", purchase_records[name][3])
-    print("Ticket Cost\t: ", purchase_records[name][4])
-    print("Mask Fee\t: ", purchase_records[name][5])
-    print("Sub-total\t: ", purchase_records[name][6])
-    print("Tax\t\t: ", purchase_records[name][7])
-    print("Name\t\t: ", name)
-    print("Total\t\t: ", purchase_records[name][8])
-    print("Name\t\t: ", name)
+    print("Ticket Cost\t:  $" + str(round(purchase_records[name][4], 2)) + ".00")
+    print("Mask Fee\t:   $" + str(round(purchase_records[name][5], 2)) + ".00")
+    print("Sub-total\t:  $" + str(round(purchase_records[name][6], 2)) + ".00")
+    print("Tax\t\t:   ${:.2f}".format(round(purchase_records[name][7], 2)))
+    print("-" * 77)
+    print("Total\t\t:  $" + str(round(purchase_records[name][8], 2)))
+    print("-" * 77)
     
 
 # Saves seating chart and purchase history to JSON files
