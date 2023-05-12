@@ -82,7 +82,7 @@ def create_column_header(columns):
     return column_header
 
 # Menu function to display menu and accept user input
-def menu_selections(user_selection, seating_matrix, rows, columns):
+def menu_selections(user_selection, purchase_records, seating_matrix, rows, columns):
     
     # Loop to display menu and accept user input
     while len(user_selection) != 1:
@@ -98,16 +98,16 @@ def menu_selections(user_selection, seating_matrix, rows, columns):
             user_selection = '__'
             break
         
-        menu_options(user_selection, seating_matrix, rows, columns)
+        menu_options(user_selection, purchase_records, seating_matrix, rows, columns)
         user_selection = '__'
     return
 
 # Decision tree to direct calls based on user selection
-def menu_options(user_selection, seating_matrix, rows, columns):
+def menu_options(user_selection, purchase_records, seating_matrix, rows, columns):
     if user_selection == 'v':
         print_seating(seating_matrix, rows, columns)
     elif user_selection == "b":
-        buy_tickets()
+        buy_tickets(purchase_records, seating_matrix)
     elif user_selection == "d":
         display_all_purchases()
     elif user_selection == "s":
@@ -116,7 +116,7 @@ def menu_options(user_selection, seating_matrix, rows, columns):
     return
 
 # Buy ticket function requests user input to reserve seats
-def buy_tickets():
+def buy_tickets(purchase_records, seating_matrix):
     letters_to_numbers_file = open(os.path.join(os.path.dirname(__file__), "column_letters_to_numbers.json"))
     numbers_to_letters_file = open(os.path.join(os.path.dirname(__file__), "column_numbers_to_letters.json"))
     letters_to_numbers = json.load(letters_to_numbers_file)
@@ -147,11 +147,121 @@ def buy_tickets():
     # Slice user entry to separate row from column and convert
     start_row = int(starting_seat[0:2]) - 1
     start_column = letters_to_numbers[str(starting_seat[2:3])]
-    print(start_row)
-    print(start_column)
+
+    # Check if seats available
+    for i in range(0, number_seats):
+        if seating_matrix[start_row][start_column+i] != '.':
+            print("\nSorry, your selection is not available.")
+            return
+    
+    for i in range(0, number_seats):
+
+        # Reserve user's selected seats
+        seating_matrix[start_row][start_column + i] = 'X'
+
+        # Add seats reserved for COVID spacing (e) in front and back
+        if start_row == 0:
+            seating_matrix[start_row + 1][start_column + i] = 'e'
+        elif start_row == 19:
+            seating_matrix[start_row - 1][start_column + i] = 'e'
+        else:
+            seating_matrix[start_row + 1][start_column + i] = 'e'
+            seating_matrix[start_row - 1][start_column + i] = 'e'
+    
+    # Call function to add in COVID spacing seats around user's seats
+    covid_spacing(seating_matrix, number_seats, start_row, start_column)
+
+    letters_to_numbers_file.close()
+    numbers_to_letters_file.close()
 
     return
 
+# Adds COVID spacing seats around user's selected seats
+def covid_spacing(seating_matrix, number_seats, start_row, start_column):
+
+    # Add seats for COVID spacing (e) to left
+    if start_column == 0:
+        pass
+
+    elif start_column == 1 and start_row not in [0, 19]:
+        seating_matrix[start_row][start_column - 1] = 'e'
+        seating_matrix[start_row + 1][start_column - 1] = 'e'
+        seating_matrix[start_row - 1][start_column - 1] = 'e'
+    
+    elif start_column == 1 and start_row == 0:
+        seating_matrix[start_row][start_column - 1] = 'e'
+        seating_matrix[start_row + 1][start_column - 1] = 'e'
+    
+    elif start_column == 1 and start_row == 19:
+        seating_matrix[start_row][start_column - 1] = 'e'
+        seating_matrix[start_row - 1][start_column - 1] = 'e'    
+
+    elif start_column > 1 and start_row not in [0, 19]:
+        seating_matrix[start_row][start_column - 1] = 'e'
+        seating_matrix[start_row][start_column - 2] = 'e'
+        seating_matrix[start_row + 1][start_column - 1] = 'e'
+        seating_matrix[start_row - 1][start_column - 1] = 'e'
+        seating_matrix[start_row + 1][start_column - 2] = 'e'
+        seating_matrix[start_row - 1][start_column - 2] = 'e'
+
+    elif start_column > 1 and start_row == 0:
+        seating_matrix[start_row][start_column - 1] = 'e'
+        seating_matrix[start_row][start_column - 2] = 'e'
+        seating_matrix[start_row + 1][start_column - 1] = 'e'
+        seating_matrix[start_row + 1][start_column - 2] = 'e'
+
+    elif start_column > 1 and start_row == 19:
+        seating_matrix[start_row][start_column - 1] = 'e'
+        seating_matrix[start_row][start_column - 2] = 'e'
+        seating_matrix[start_row - 1][start_column - 1] = 'e'
+        seating_matrix[start_row - 1][start_column - 2] = 'e'
+
+    else:
+        print("Sorry, you missed an edge case to the left.")
+
+
+    # Add seats for COVID spacing (e) to right
+    right_seat = start_column + number_seats - 1
+    if right_seat == 25:
+        pass
+
+    elif right_seat == 24 and start_row not in [0, 19]:
+        seating_matrix[start_row][right_seat + 1] = 'e'
+        seating_matrix[start_row + 1][right_seat + 1] = 'e'
+        seating_matrix[start_row - 1][right_seat + 1] = 'e'
+    
+    elif right_seat == 24 and start_row == 0:
+        seating_matrix[start_row][right_seat + 1] = 'e'
+        seating_matrix[start_row + 1][right_seat + 1] = 'e'
+
+    elif right_seat == 24 and start_row == 19:
+        seating_matrix[start_row][right_seat + 1] = 'e'
+        seating_matrix[start_row - 1][right_seat + 1] = 'e'
+
+    elif right_seat < 24 and start_row not in [0, 19]:
+        seating_matrix[start_row][right_seat + 1] = 'e'
+        seating_matrix[start_row][right_seat + 2] = 'e'
+        seating_matrix[start_row + 1][right_seat + 1] = 'e'
+        seating_matrix[start_row + 1][right_seat + 2] = 'e'
+        seating_matrix[start_row - 1][right_seat + 1] = 'e'
+        seating_matrix[start_row - 1][right_seat + 2] = 'e'
+
+    elif right_seat < 24 and start_row == 0:
+        seating_matrix[start_row][right_seat + 1] = 'e'
+        seating_matrix[start_row][right_seat + 2] = 'e'
+        seating_matrix[start_row + 1][right_seat + 1] = 'e'
+        seating_matrix[start_row + 1][right_seat + 2] = 'e'
+
+    elif right_seat < 24 and start_row == 19:
+        seating_matrix[start_row][right_seat + 1] = 'e'
+        seating_matrix[start_row][right_seat + 2] = 'e'
+        seating_matrix[start_row - 1][right_seat + 1] = 'e'
+        seating_matrix[start_row - 1][right_seat + 2] = 'e'
+
+    else:
+        print("Sorry, you missed an edge case to the right.")
+
+    return
 
 def quit_program(seating_matrix, purchase_records):
     with open("seating.json", "w") as outfile1:
@@ -171,7 +281,7 @@ seating_matrix = create_seating(rows, columns)
 purchase_records = dict()
 
 # Call function to display menu and accept user input
-menu_selections(user_selection, seating_matrix, rows, columns)
+menu_selections(user_selection, purchase_records, seating_matrix, rows, columns)
 
 # Call function to save JSON files before exiting app
 quit_program(seating_matrix, purchase_records)
