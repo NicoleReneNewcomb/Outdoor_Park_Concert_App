@@ -1,4 +1,6 @@
+import os.path
 import string
+import json
 
 """
     Student: Nicole-Rene Newcomb
@@ -7,13 +9,22 @@ import string
         and ticket sales with receipts for users.
 """
 
-# Creates matrix (2D array) to represent seating chart
+# Opens JSON or creates matrix (2D array) to represent seating chart
 def create_seating(rows, columns):
-    open_seat = '.'
-    seating_matrix = [[open_seat for columns 
+        
+    #Opens JSON seating file, if exists
+    try:
+        open_seating_file = open(os.path.join(os.path.dirname(__file__), "seating.json"))
+        seating_matrix = json.load(open_seating_file) 
+    except IOError:
+        print("Error: Sorry, file can't be opened " + open_seating_file)
+        raise IOError
+    finally:
+        open_seat = '.'
+        seating_matrix = [[open_seat for columns 
                        in range(0, columns)] for row 
                        in range(0, rows)]
-    return seating_matrix
+        return seating_matrix
 
 # Prints out entire seating chart with headers
 def print_seating_chart(matrix, rows, columns):
@@ -47,12 +58,14 @@ def create_column_header(columns):
 
 
 
+def quit_program(seating_matrix):
+    json
 
+
+open_seating_file = open_file()
 number_of_rows = 20
 number_of_columns = 26
 seating_matrix = create_seating(number_of_rows, number_of_columns)
-seating_matrix[8][6] = 'e'
-seating_matrix[8][7] = 'e'
-seating_matrix[8][8] = 'e'
+
 
 print_seating_chart(seating_matrix, number_of_rows, number_of_columns)
