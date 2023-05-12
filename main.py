@@ -37,6 +37,8 @@ def print_menu():
     print("\t[q] Quit")
     print("\n")
 
+    return
+
 def create_menu_header():
     menu_header = "\n\n" + "="*77 + "\n\tOutdoor Park Concert App\n" + "="*77 + "\n"
     return menu_header
@@ -125,7 +127,7 @@ def menu_options(user_selection, purchase_records, seating_matrix, rows, columns
     elif user_selection == "d":
         display_all_purchases(purchase_records)
     elif user_selection == "s":
-        search_for_purchase()
+        search_for_purchase(purchase_records)
     
     return
 
@@ -351,6 +353,8 @@ def print_receipt(purchase_records, name):
     print("-" * 77)
     print("Total\t\t:  ${:.2f}".format(round(purchase_records[name][8], 2)))
     print("-" * 77)
+
+    return
     
 # Prints out all receipts for prior purchases
 def display_all_purchases(purchase_records):
@@ -382,6 +386,28 @@ def display_all_purchases(purchase_records):
     print("Grand Total\t:  ${:.2f}".format(round(grand_total, 2)))
     print("-" * 77)
     print()
+
+    return
+
+# Searches for matching name in purchase records
+def search_for_purchase(purchase_records):
+    match_list = list()
+    search_term = input("\nEnter a name to search for transaction: ")
+    for name in purchase_records["transaction_names_list"]:
+        if search_term in name:
+            match_list.append(name)
+    
+    if len(match_list) == 0:
+        print("\nSorry, no matches found.")
+
+    else:
+        matching_transactions_header = "\n\n" + "="*77 + "\n\tMATCHING TRANSACTIONS\n" + "="*77
+        print(matching_transactions_header)
+
+        for name in match_list:
+            print_receipt(purchase_records, name)
+
+    return
 
 # Saves seating chart and purchase history to JSON files
 def quit_program(seating_matrix, purchase_records):
