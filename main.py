@@ -5,8 +5,12 @@ import json
 """
     Student: Nicole-Rene Newcomb
     Class: CIS024C Python Programming
-    Description: app manages concert seat availability
-        and ticket sales with receipts for users.
+    Title: Outdoor Park Concert App
+    Description: app manages concert seat ticket requests, 
+        showing availability, checking seat assignments for
+        conflicts before sale, recording ticket sales,  
+        creating receipts for users, and calculating the
+        grand total of all sales transactions recorded.
 """
 
 # Opens JSON file or creates matrix (2D array) as seating chart
