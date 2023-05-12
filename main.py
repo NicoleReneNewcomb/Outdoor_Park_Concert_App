@@ -27,7 +27,7 @@ def create_seating(rows, columns):
         return seating_matrix
 
 # Prints out entire seating chart with headers
-def print_seating_chart(matrix, rows, columns):
+def print_seating(matrix, rows, columns):
 
     column_header = create_column_header(columns)
     seating_header = create_seating_header()
@@ -35,7 +35,7 @@ def print_seating_chart(matrix, rows, columns):
     print(column_header)
     for row in range(rows):
 
-        # Since 0 is an uncommon row number, I added 1 to each row #
+        # Since 0 is an uncommon row number in US, I added 1 to each row #
         print("%02d" % (row + 1), end="\t")
         [print(seating_matrix[row][column], end = " ") for column in range(columns)]
         if row < 5:
@@ -77,5 +77,5 @@ rows = 20
 columns = 26
 seating_matrix = create_seating(rows, columns)
 purchase_records = dict()
-print_seating_chart(seating_matrix, rows, columns)
+print_seating(seating_matrix, rows, columns)
 quit_program(seating_matrix, purchase_records)
