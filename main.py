@@ -46,6 +46,15 @@ def print_seating(matrix, rows, columns):
             print("\tBack\t $25")
     print()
 
+# Prints the app menu for user selections
+def print_menu():
+    menu_header = create_menu_header()
+    print(menu_header)
+
+def create_menu_header():
+    menu_header = "\n\n" + "="*77 + "\n\tOutdoor Park Concert App\n" + "="*77 + "\n"
+    return menu_header
+
 # Creates seating header to be displayed
 def create_seating_header():
     seating_header = "\n\n" + "="*77 + "\n\tSEATING CHART\n" + "="*77 + "\n"
@@ -73,9 +82,14 @@ def quit_program(seating_matrix, purchase_records):
     with open("purchases.json", "w") as outfile2:
         json.dump(purchase_records, outfile2)
 
+user_selection = '_'
 rows = 20
 columns = 26
 seating_matrix = create_seating(rows, columns)
 purchase_records = dict()
+while user_selection != 'q':
+    print_menu()
+    user_selection = input("Please enter your selection: ")
+print("UGHHHHH")
 print_seating(seating_matrix, rows, columns)
 quit_program(seating_matrix, purchase_records)
