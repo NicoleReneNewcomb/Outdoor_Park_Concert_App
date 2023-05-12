@@ -34,7 +34,7 @@ def print_menu():
     print("\t[v] View Seating")
     print("\t[s] Search for Customer Purchase Receipt by Name")
     print("\t[d] Display All Purchases and Total Sales Amount")
-    print("\t[q] quit")
+    print("\t[q] Quit")
     print("\n")
 
 def create_menu_header():
@@ -60,6 +60,7 @@ def print_seating(matrix, rows, columns):
         else:
             print("\tBack\t $25")
     print()
+    return
 
 # Creates seating header to be displayed
 def create_seating_header():
@@ -80,14 +81,36 @@ def create_column_header(columns):
     column_header = letter_line + "\n" + separator_line
     return column_header
 
-def menu_options(user_selection, rows, columns):
-    if user_selection is 'v':
+# Menu function to display menu and accept user input
+def menu_selections(user_selection, seating_matrix, rows, columns):
+    
+    # Loop to display menu and accept user input
+    while len(user_selection) != 1:
+        print_menu()
+
+        user_selection = input("Please enter your selection: ").lower()
+
+        if user_selection == 'q': 
+            break
+
+        while user_selection not in ['q', 'b', 'v', 's', 'd']:
+            print("\nPlease enter a single letter (i.e. v)")
+            user_selection = '__'
+            break
+        
+        menu_options(user_selection, seating_matrix, rows, columns)
+        user_selection = '__'
+    return
+
+# Decision tree to direct calls based on user selection
+def menu_options(user_selection, seating_matrix, rows, columns):
+    if user_selection == 'v':
         print_seating(seating_matrix, rows, columns)
-    elif user_selection is "b":
+    elif user_selection == "b":
         buy_ticket()
-    elif user_selection is "d":
+    elif user_selection == "d":
         display_all_purchases()
-    elif user_selection is "s":
+    elif user_selection == "s":
         search_for_purchase()
 
 
@@ -97,14 +120,17 @@ def quit_program(seating_matrix, purchase_records):
     with open("purchases.json", "w") as outfile2:
         json.dump(purchase_records, outfile2)
 
-user_selection = '_'
+    outfile1.close()
+    outfile2.close()
+
+user_selection = '__'
 rows = 20
 columns = 26
 seating_matrix = create_seating(rows, columns)
 purchase_records = dict()
-while user_selection != 'q':
-    print_menu()
-    user_selection = input("Please enter your selection: ")
-    menu_options(user_selection, rows, columns)
 
+# Call function to display menu and accept user input
+menu_selections(user_selection, seating_matrix, rows, columns)
+
+# Call function to save JSON files before exiting app
 quit_program(seating_matrix, purchase_records)
