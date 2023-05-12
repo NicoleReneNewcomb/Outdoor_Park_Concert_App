@@ -17,12 +17,12 @@ def create_seating(rows, columns):
         open_seating_file = open(os.path.join(os.path.dirname(__file__), "seating.json"))
         seating_matrix = json.load(open_seating_file) 
     except IOError:
-        print("Error: Sorry, file can't be opened " + open_seating_file)
+        print("Error: Sorry, seating file can't be opened.")
         open_seat = '.'
         seating_matrix = [[open_seat for columns 
                             in range(0, columns)] for row 
                             in range(0, rows)]           
-        raise IOError
+        return seating_matrix
     finally:
         return seating_matrix
 
@@ -89,9 +89,9 @@ def load_purchases():
         open_purchase_file = open(os.path.join(os.path.dirname(__file__), "purchases.json"))
         purchase_records = json.load(open_purchase_file) 
     except IOError:
-        print("Error: Sorry, file can't be opened " + open_purchase_file)
+        print("Error: Sorry, purchases file can't be opened.")
         purchase_records = dict()          
-        raise IOError
+        return purchase_records
     finally:
         return purchase_records
 
@@ -123,7 +123,7 @@ def menu_options(user_selection, purchase_records, seating_matrix, rows, columns
     elif user_selection == "b":
         buy_tickets(purchase_records, seating_matrix)
     elif user_selection == "d":
-        display_all_purchases()
+        display_all_purchases(purchase_records)
     elif user_selection == "s":
         search_for_purchase()
     
@@ -322,6 +322,13 @@ def record_transaction(purchase_records, number_seats, seats_purchased, start_ro
     tax = round(sub_total * 0.0725, 2)
     total = sub_total + tax
 
+    # Create dictionary entry to keep list of names/keys
+    try:
+        purchase_records["transaction_names_list"].append(name)
+    except:
+        purchase_records["transaction_names_list"] = list()
+        purchase_records["transaction_names_list"].append(name)
+
     purchase_records[name] = [email, tickets, seat_type, seats_purchased, ticket_cost, mask_cost, sub_total, tax, total]
 
     print_receipt(purchase_records, name)
@@ -345,6 +352,36 @@ def print_receipt(purchase_records, name):
     print("Total\t\t:  ${:.2f}".format(round(purchase_records[name][8], 2)))
     print("-" * 77)
     
+# Prints out all receipts for prior purchases
+def display_all_purchases(purchase_records):
+    grand_total = 0
+    transactions_header = "\n\n" + "="*77 + "\n\tALL TRANSACTIONS\n" + "="*77 + "\n"
+    print(transactions_header)
+
+    # For each transaction name, print out transaction receipt
+    for name in purchase_records["transaction_names_list"]:
+        grand_total += purchase_records[name][8]
+        print("-" * 77)
+        print("Name\t\t: ", name)
+        print("Email\t\t: ", purchase_records[name][0])
+        print("No. of Tickets\t: ", purchase_records[name][1])
+        print("Seat Type\t: ", purchase_records[name][2])
+        print("Seat No.\t: ", purchase_records[name][3])
+        print("Ticket Cost\t:  $" + str(round(purchase_records[name][4], 2)) + ".00")
+        print("Mask Fee\t:   $" + str(round(purchase_records[name][5], 2)) + ".00")
+        print("Sub-total\t:  $" + str(round(purchase_records[name][6], 2)) + ".00")
+        print("Tax\t\t:   ${:.2f}".format(round(purchase_records[name][7], 2)))
+        print("-" * 77)
+        print("Total\t\t:  ${:.2f}".format(round(purchase_records[name][8], 2)))
+        print("-" * 77)
+        print()
+    
+    grand_total_header = "\n\n" + "="*77 + "\n\tGRAND TOTAL OF ALL SALES\n" + "="*77
+    print(grand_total_header)
+    print("-" * 77)
+    print("Grand Total\t:  ${:.2f}".format(round(grand_total, 2)))
+    print("-" * 77)
+    print()
 
 # Saves seating chart and purchase history to JSON files
 def quit_program(seating_matrix, purchase_records):
