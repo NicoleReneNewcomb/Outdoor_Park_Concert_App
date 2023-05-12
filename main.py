@@ -117,8 +117,10 @@ def menu_options(user_selection, seating_matrix, rows, columns):
 
 # Buy ticket function requests user input to reserve seats
 def buy_tickets():
-    letters_to_numbers = open(os.path.join(os.path.dirname(__file__), "column_letters_to_numbers.json"))
-    numbers_to_letters = open(os.path.join(os.path.dirname(__file__), "column_numbers_to_letters.json"))
+    letters_to_numbers_file = open(os.path.join(os.path.dirname(__file__), "column_letters_to_numbers.json"))
+    numbers_to_letters_file = open(os.path.join(os.path.dirname(__file__), "column_numbers_to_letters.json"))
+    letters_to_numbers = json.load(letters_to_numbers_file)
+    numbers_to_letters = json.load(numbers_to_letters_file)
     is_int = False
 
     # Validates that user input is an integer value
@@ -137,11 +139,16 @@ def buy_tickets():
         except:
             print("\nInvalid input: please enter a numerical integer value.")
     
+    # Select left-most seat from which seats will be assigned
     print("\nPick a seat using the 2 digit row number followed by a column letter.")
     print("For example, 02f, 09a, or 13m.")
     starting_seat = input("\nSelect the left-most seat to reserve: ")
-        start_row = starting_seat[0:2]
-        start_column = starting_seat[2]
+    
+    # Slice user entry to separate row from column and convert
+    start_row = int(starting_seat[0:2]) - 1
+    start_column = letters_to_numbers[str(starting_seat[2:3])]
+    print(start_row)
+    print(start_column)
 
     return
 
