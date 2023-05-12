@@ -107,11 +107,43 @@ def menu_options(user_selection, seating_matrix, rows, columns):
     if user_selection == 'v':
         print_seating(seating_matrix, rows, columns)
     elif user_selection == "b":
-        buy_ticket()
+        buy_tickets()
     elif user_selection == "d":
         display_all_purchases()
     elif user_selection == "s":
         search_for_purchase()
+    
+    return
+
+# Buy ticket function requests user input to reserve seats
+def buy_tickets():
+    letters_to_numbers = open(os.path.join(os.path.dirname(__file__), "column_letters_to_numbers.json"))
+    numbers_to_letters = open(os.path.join(os.path.dirname(__file__), "column_numbers_to_letters.json"))
+    is_int = False
+
+    # Validates that user input is an integer value
+    while not is_int:
+        number_seats = input("\nPlease enter number of seats to buy: ")
+        
+        try:
+            if number_seats.find('.') < 0 and int(number_seats):
+                number_seats = int(number_seats)
+                if number_seats > 0 and number_seats < 27:
+                    is_int = True
+                else:
+                    print("\nPlease enter a number between 1-26. ")
+            else:
+                print("\nInvalid input: please enter a whole number over 0. ")
+        except:
+            print("\nInvalid input: please enter a numerical integer value.")
+    
+    print("\nPick a seat using the 2 digit row number followed by a column letter.")
+    print("For example, 02f, 09a, or 13m.")
+    starting_seat = input("\nSelect the left-most seat to reserve: ")
+        start_row = starting_seat[0:2]
+        start_column = starting_seat[2]
+
+    return
 
 
 def quit_program(seating_matrix, purchase_records):
@@ -122,6 +154,8 @@ def quit_program(seating_matrix, purchase_records):
 
     outfile1.close()
     outfile2.close()
+
+    return
 
 user_selection = '__'
 rows = 20
