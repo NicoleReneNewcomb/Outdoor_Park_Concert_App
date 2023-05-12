@@ -18,14 +18,13 @@ def create_seating(rows, columns):
         seating_matrix = json.load(open_seating_file) 
     except IOError:
         print("Error: Sorry, file can't be opened " + open_seating_file)
+        open_seat = '.'
+        seating_matrix = [[open_seat for columns 
+                            in range(0, columns)] for row 
+                            in range(0, rows)]           
         raise IOError
     finally:
-        if IOError:
-            open_seat = '.'
-            seating_matrix = [[open_seat for columns 
-                                in range(0, columns)] for row 
-                                in range(0, rows)]
-            return seating_matrix
+        return seating_matrix
 
 # Prints out entire seating chart with headers
 def print_seating_chart(matrix, rows, columns):
@@ -60,12 +59,15 @@ def create_column_header(columns):
 
 
 
-def quit_program(seating_matrix):
-    with open("seating.json", "w") as outfile:
-        json.dump(seating_matrix, outfile)
+def quit_program(seating_matrix, purchase_records):
+    with open("seating.json", "w") as outfile1:
+        json.dump(seating_matrix, outfile1)
+    with open("purchases.json", "w") as outfile2:
+        json.dump(purchase_records, outfile2)
 
 rows = 20
 columns = 26
 seating_matrix = create_seating(rows, columns)
+purchase_records = dict()
 print_seating_chart(seating_matrix, rows, columns)
-quit_program(seating_matrix)
+quit_program(seating_matrix, purchase_records)
