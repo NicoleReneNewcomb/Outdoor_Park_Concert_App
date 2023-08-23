@@ -1,4 +1,4 @@
-# Outdoor_Park_Concert_App
+# Outdoor Park Concert App
 Manages Ticket Sales and Seating Assignments
 
 This app provides a simple seating chart that is saved and 
